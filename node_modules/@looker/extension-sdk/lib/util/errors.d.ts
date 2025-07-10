@@ -1,1 +1,0 @@
-export declare const NOT_DASHBOARD_MOUNT_NOT_SUPPORTED_ERROR: Error;
