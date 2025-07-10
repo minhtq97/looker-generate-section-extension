@@ -15,6 +15,9 @@ const util = require("util");
 /** @typedef {import("../../declarations/WebpackOptions").RuleSetUseItem} RuleSetUseItem */
 /** @typedef {import("./RuleSetCompiler")} RuleSetCompiler */
 /** @typedef {import("./RuleSetCompiler").Effect} Effect */
+/** @typedef {import("./RuleSetCompiler").EffectData} EffectData */
+
+const PLUGIN_NAME = "UseEffectRulePlugin";
 
 class UseEffectRulePlugin {
 	/**
@@ -23,7 +26,7 @@ class UseEffectRulePlugin {
 	 */
 	apply(ruleSetCompiler) {
 		ruleSetCompiler.hooks.rule.tap(
-			"UseEffectRulePlugin",
+			PLUGIN_NAME,
 			(path, rule, unhandledProperties, result, references) => {
 				/**
 				 * @param {keyof RuleSetRule} property property
@@ -55,7 +58,7 @@ class UseEffectRulePlugin {
 					 * @param {string} path options path
 					 * @param {string} defaultIdent default ident when none is provided
 					 * @param {RuleSetUseItem} item user provided use value
-					 * @returns {Effect | ((value: TODO) => Effect[])} effect
+					 * @returns {(Effect | ((effectData: EffectData) => Effect[]))} effect
 					 */
 					const useToEffect = (path, defaultIdent, item) => {
 						if (typeof item === "function") {
@@ -139,7 +142,7 @@ class UseEffectRulePlugin {
 					/**
 					 * @param {string} path current path
 					 * @param {RuleSetUse} items user provided use value
-					 * @returns {(Effect | ((value: TODO) => Effect[]))[]} effects
+					 * @returns {(Effect | ((effectData: EffectData) => Effect[]))[]} effects
 					 */
 					const useToEffects = (path, items) => {
 						if (Array.isArray(items)) {
@@ -160,10 +163,7 @@ class UseEffectRulePlugin {
 
 					if (typeof use === "function") {
 						result.effects.push(data =>
-							useToEffectsWithoutIdent(
-								`${path}.use`,
-								use(/** @type {TODO} */ (data))
-							)
+							useToEffectsWithoutIdent(`${path}.use`, use(data))
 						);
 					} else {
 						for (const effect of useToEffects(`${path}.use`, use)) {
