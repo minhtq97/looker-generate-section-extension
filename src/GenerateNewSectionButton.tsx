@@ -1,4 +1,4 @@
-import { Box, Button, Space } from "@looker/components";
+import { Box, Button } from "@looker/components";
 import { ExtensionContext40 } from "@looker/extension-sdk-react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
@@ -21,11 +21,6 @@ const StyledButton = styled.button`
   align-items: center !important;
   justify-content: center !important;
 
-  &:hover {
-    background-color: #0056b3 !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
-  }
 
   &:active {
     transform: translateY(0) !important;
@@ -167,12 +162,15 @@ const GenerateNewSectionButton: React.FC = () => {
 
   return (
     <Box height="100%">
-      <Box height="100%">
-        <Space justify="end" between={true} style={{ marginTop: "-2rem !important" }} px="medium">
-          <StyledButton onClick={handleClick}>
-            Generate New Section
-          </StyledButton>
-        </Space>
+      <Box 
+        height="100%" 
+        display="flex" 
+        alignItems="center" 
+        justifyContent="center"
+      >
+        <StyledButton onClick={handleClick}>
+          Generate New Section
+        </StyledButton>
       </Box>
     </Box>
   );
