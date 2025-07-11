@@ -12,33 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const commonConfig = require('./webpack.config');
-const TerserPlugin = require('terser-webpack-plugin');
+const commonConfig = require("./webpack.config");
 
 module.exports = {
   ...commonConfig,
-  mode: 'production',
+  mode: "production",
   optimization: {
-    chunkIds: 'named',
-    minimize: true,
-    minimizer: [
-      new TerserPlugin({
-        terserOptions: {
-          compress: {
-            drop_console: true, // Remove console.log in production
-            drop_debugger: true,
-            pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.warn'],
-          },
-          mangle: true,
-        },
-        extractComments: false,
-      }),
-    ],
-    splitChunks: false,
-  },
-  performance: {
-    hints: 'warning',
-    maxEntrypointSize: 512000,
-    maxAssetSize: 512000,
+    chunkIds: "named",
   },
 };

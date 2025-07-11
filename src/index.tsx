@@ -12,25 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { ExtensionProvider40 } from '@looker/extension-sdk-react';
-import { ComponentsProvider } from '@looker/components';
-import './index.scss';
-import App from './App';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { App } from './App'
 
-window.addEventListener('DOMContentLoaded', () => {
-  const root = document.createElement('div');
-  root.className = 'tw-bi-rebate-ext';
-  root.style.height = '100%';
-  document.body.appendChild(root);
-  
-  ReactDOM.render(
-    <ExtensionProvider40>
-      <ComponentsProvider>
-        <App />
-      </ComponentsProvider>
-    </ExtensionProvider40>,
-    root
-  );
-});
+window.addEventListener('DOMContentLoaded', (_) => {
+  const root = document.createElement('div')
+  document.body.appendChild(root)
+  ReactDOM.render(<App />, root)
+})

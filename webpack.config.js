@@ -12,47 +12,50 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const fs = require("fs");
+const path = require("path");
+
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
+  .BundleAnalyzerPlugin;
+if (!process.env.POSTS_SERVER_URL) {
+  // webpack 5 is stricter about environment variables. The POSTS_SERVER_URL
+  // environment variable was not mentioned in the README so default it for
+  // those developers who may have created a .env file without the variable.
+  process.env.POSTS_SERVER_URL = "http://127.0.0.1:3000";
+}
+
+const PATHS = {
+  app: path.join(__dirname, "src/index.tsx"),
+};
 
 module.exports = {
-  entry: './src/index.tsx',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-    clean: true,
+  entry: {
+    app: PATHS.app,
   },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+  output: {
+    path: __dirname + "/dist",
+    filename: "bundle.js",
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.(js|jsx|ts|tsx)$/,
+        loader: "babel-loader",
         exclude: /node_modules/,
-      },
-      {
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.scss$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        include: /src/,
+        sideEffects: false,
       },
     ],
   },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+    fallback: { buffer: false },
+  },
+  devtool: "source-map",
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
+    new BundleAnalyzerPlugin({
+      analyzerMode: process.env.ANALYZE_MODE || "disabled",
     }),
   ],
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
-    compress: true,
-    port: 9000,
-    hot: true,
-  },
 };
+
