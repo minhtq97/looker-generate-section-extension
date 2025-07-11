@@ -1,12 +1,12 @@
 project_name: "tw_create_section_extension"
 
 application: tw_create_section_extension {
-  label: "TW Rebate Create Section Extension"
+  label: ""
   file: "dist/bundle.js"
   mount_points: {
     dashboard_vis: yes
-    dashboard_tile: yes
-    standalone: yes
+    dashboard_tile: no
+    standalone: no
   }
   entitlements: {
     core_api_methods: ["me", "artifact", "update_artifacts", "all_boards", "board", "dashboard"]
