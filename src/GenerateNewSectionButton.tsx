@@ -1,4 +1,4 @@
-import { Box, Button } from "@looker/components";
+import { Box, Button, Space } from "@looker/components";
 import { ExtensionContext40 } from "@looker/extension-sdk-react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 
@@ -131,14 +131,17 @@ const GenerateNewSectionButton: React.FC = () => {
 
   return (
     <Box height="100%">
-      <Button
-        onClick={handleClick}
-        width={200}
-        style={{ marginTop: "0 !important" }}
-        variant="primary"
-      >
-        Generate New Section
-      </Button>
+      <Box height="100%">
+        <Space justify="end" between={true} style={{ marginTop: "-2rem !important" }} px="medium">
+          <Button
+            onClick={handleClick}
+            width={200}
+            variant="primary"
+          >
+            Generate New Section
+          </Button>
+        </Space>
+      </Box>
     </Box>
   );
 };
