@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext } from 'react';
-import { ExtensionContext, ExtensionProvider40 } from '@looker/extension-sdk-react';
-import { Button, Box, ComponentsProvider } from '@looker/components';
+import { ExtensionContext } from '@looker/extension-sdk-react';
+import { Button, Box } from '@looker/components';
 
 const App: React.FC = () => {
   const { extensionSDK } = useContext(ExtensionContext);
@@ -35,15 +35,11 @@ const App: React.FC = () => {
   }, [extensionSDK]);
 
   return (
-    <ExtensionProvider40>
-      <ComponentsProvider>
-        <Box p="large" display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-          <Button onClick={generateNewSection} disabled={loading} size="large">
-            {loading ? 'Generating...' : 'Generate Section'}
-          </Button>
-        </Box>
-      </ComponentsProvider>
-    </ExtensionProvider40>
+    <Box p="large" display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Button onClick={generateNewSection} disabled={loading} size="large">
+        {loading ? 'Generating...' : 'Generate Section'}
+      </Button>
+    </Box>
   );
 };
 
