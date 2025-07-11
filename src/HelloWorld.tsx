@@ -1,98 +1,98 @@
-// Copyright 2021 Google LLC
+import React, { useCallback, useContext } from 'react'
+import { Button } from '@looker/components'
+import { ExtensionContext40 } from '@looker/extension-sdk-react'
 
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Helper to generate UUID v4
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
 
-//     https://www.apache.org/licenses/LICENSE-2.0
+// Helper to get UUID from filters (not used here, but left for context)
+function getUUIDFromFilters(dashboardFilters: Record<string, any>): string | null {
+  if (
+    dashboardFilters &&
+    ((dashboardFilters.uuid && dashboardFilters.uuid !== '' && dashboardFilters.uuid !== null && dashboardFilters.uuid !== undefined) ||
+      (dashboardFilters.UUID && dashboardFilters.UUID !== '' && dashboardFilters.UUID !== null && dashboardFilters.UUID !== undefined))
+  ) {
+    return dashboardFilters.uuid || dashboardFilters.UUID;
+  }
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlUuid = urlParams.get('UUID') || urlParams.get('uuid');
+  if (urlUuid && urlUuid !== '' && urlUuid !== 'null' && urlUuid !== 'undefined') {
+    return urlUuid;
+  }
+  return null;
+}
 
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// Helper to generate dashboard URL with filters and UUID
+function generateDashboardURLWithFiltersAndUUID(
+  dashboardId: string,
+  dashboardFilters: Record<string, any>,
+  uuid: string,
+): string {
+  const baseUrl = 'https://lookerdev.zuelligpharma.com';
+  const dashboardUrl = `${baseUrl}/dashboards/${dashboardId}`;
+  const url = new URL(dashboardUrl);
+  Object.entries(dashboardFilters).forEach(([key, value]) => {
+    if (key && value && value !== '' && value !== '-NULL') {
+      url.searchParams.set(key, String(value));
+    }
+  });
+  url.searchParams.set('UUID', uuid);
+  return url.toString();
+}
 
-import React, { useContext, useEffect, useState } from 'react'
-import { ComponentsProvider, Space, Span, Button, Box, Heading } from '@looker/components'
-import { ExtensionContext } from '@looker/extension-sdk-react'
+const GenerateNewSectionButton: React.FC = () => {
+  const { extensionSDK, tileHostData } = useContext(ExtensionContext40);
 
-/**
- * A simple component that uses the Looker SDK through the extension sdk to display a customized hello message.
- */
-export const HelloWorld: React.FC = () => {
-  const extensionContext = useContext(ExtensionContext)
-  const [message, setMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const getMe = async () => {
-      try {
-        setIsLoading(true)
-        setError(null)
-        
-        // Check if we're running inside Looker
-        if (!extensionContext || !extensionContext.core40SDK) {
-          setError('Extension is not running inside Looker environment')
-          setIsLoading(false)
-          return
+  const handleClick = useCallback(async () => {
+    const uuid = generateUUID();
+    const currentDashboardId = tileHostData?.dashboardId?.toString();
+    if (!currentDashboardId) {
+      alert('Unable to determine current dashboard ID. Please try again.');
+      return;
+    }
+    // Get current dashboard filters
+    const dashboardFilters: Record<string, any> = {};
+    if (tileHostData && (tileHostData as any).dashboardFilters) {
+      Object.entries((tileHostData as any).dashboardFilters).forEach(([key, value]) => {
+        if (key && value && value !== '' && value !== '-NULL') {
+          dashboardFilters[key] = value;
         }
-
-        const me = await extensionContext.core40SDK.ok(extensionContext.core40SDK.me())
-        setMessage(`Hello, ${me.display_name}`)
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Error getting user info:', error)
-        setError('An error occurred while getting information about me!')
-        setIsLoading(false)
+      });
+    }
+    const newUrl = generateDashboardURLWithFiltersAndUUID(currentDashboardId, dashboardFilters, uuid);
+    console.log('Generated new section URL:', newUrl);
+    try {
+      if (extensionSDK && typeof extensionSDK.openBrowserWindow === 'function') {
+        await extensionSDK.openBrowserWindow(newUrl, '_blank');
+      } else {
+        throw new Error('openBrowserWindow not available');
+      }
+    } catch (error) {
+      console.error('Failed to open browser window:', error);
+      try {
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(newUrl);
+          alert(`URL copied to clipboard. Please open it in a new tab.\n\n${newUrl}`);
+        } else {
+          alert(`Please navigate to:\n\n${newUrl}\n\nCopy this URL and open it in a new tab.`);
+        }
+      } catch {
+        alert(`Please navigate to:\n\n${newUrl}\n\nCopy this URL and open it in a new tab.`);
       }
     }
-    getMe()
-  }, [extensionContext])
+  }, [extensionSDK, tileHostData]);
 
-  // Show loading state
-  if (isLoading) {
-    return (
-      <ComponentsProvider>
-        <Space around>
-          <Span fontSize="large">Loading...</Span>
-        </Space>
-      </ComponentsProvider>
-    )
-  }
-
-  // Show error state
-  if (error) {
-    return (
-      <ComponentsProvider>
-        <Box p="large">
-          <Space>
-            <Heading as="h1" fontSize="large" color="critical">
-              {error}
-            </Heading>
-            <Span fontSize="medium">
-              This extension needs to run inside a Looker environment.
-            </Span>
-            <Button 
-              onClick={() => window.location.reload()}
-              size="small"
-            >
-              Retry
-            </Button>
-          </Space>
-        </Box>
-      </ComponentsProvider>
-    )
-  }
-
-  // Show success state
   return (
-    <ComponentsProvider>
-      <Space around>
-        <Span fontSize="xxxxxlarge">
-          {message}
-        </Span>
-      </Space>
-    </ComponentsProvider>
-  )
+    <Button onClick={handleClick} width={200} mt="xlarge">
+      Generate New Section
+    </Button>
+  );
 }
+
+export default GenerateNewSectionButton;
