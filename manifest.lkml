@@ -1,7 +1,7 @@
 project_name: "tw_create_section_extension"
 
 application: tw_create_section_extension {
-  label: "Create Section"
+  label: "TW Rebate Create Section"
   file: "dist/bundle.js"
   mount_points: {
     dashboard_vis: yes
