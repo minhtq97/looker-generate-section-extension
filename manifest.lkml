@@ -5,7 +5,7 @@ application: tw_create_section_extension {
   file: "dist/bundle.js"
   mount_points: {
     dashboard_vis: yes
-    dashboard_tile: no
+    dashboard_tile: yes
     standalone: yes
   }
   entitlements: {
