@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useContext } from 'react';
 import { ExtensionContext } from '@looker/extension-sdk-react';
-import { Button, Box } from '@looker/components';
+import { Button, Box, Text } from '@looker/components';
 
 const App: React.FC = () => {
-  const { extensionSDK } = useContext(ExtensionContext);
+  const context = useContext(ExtensionContext);
+  const extensionSDK = context && context.extensionSDK;
   const [loading, setLoading] = useState(false);
 
   const generateUUID = (): string => {
@@ -16,11 +17,9 @@ const App: React.FC = () => {
 
   const generateNewSection = useCallback(async () => {
     setLoading(true);
-    
     try {
       const uuid = generateUUID();
       const newUrl = `https://lookerdev.zuelligpharma.com/dashboards/1?section_uuid=${uuid}`;
-      
       if (extensionSDK && typeof extensionSDK.openBrowserWindow === 'function') {
         await extensionSDK.openBrowserWindow(newUrl, '_blank');
       } else {
@@ -33,6 +32,15 @@ const App: React.FC = () => {
       setLoading(false);
     }
   }, [extensionSDK]);
+
+  if (!extensionSDK) {
+    return (
+      <Box p="large" display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Text fontSize="large" color="critical">This extension must be run inside Looker.</Text>
+        <Text mt="medium">If you are developing locally, deploy and open it from the Looker UI.</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box p="large" display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
