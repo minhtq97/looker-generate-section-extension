@@ -1,6 +1,6 @@
-import { Button } from "@looker/components";
+import { Box, Button } from "@looker/components";
 import { ExtensionContext40 } from "@looker/extension-sdk-react";
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 
 // Helper to generate UUID v4
 function generateUUID(): string {
@@ -11,7 +11,7 @@ function generateUUID(): string {
   });
 }
 
-// Helper to get UUID from filters (not used here, but left for context)
+// Helper to get UUID from filters
 function getUUIDFromFilters(
   dashboardFilters: Record<string, any>
 ): string | null {
@@ -61,6 +61,15 @@ function generateDashboardURLWithFiltersAndUUID(
 
 const GenerateNewSectionButton: React.FC = () => {
   const { extensionSDK, tileHostData } = useContext(ExtensionContext40);
+  const [hasValidUUID, setHasValidUUID] = useState(false);
+
+  // Check if UUID exists and is valid
+  useEffect(() => {
+    const dashboardFilters = (tileHostData as any)?.dashboardFilters || {};
+    const uuid = getUUIDFromFilters(dashboardFilters);
+    const isValid = uuid !== null;
+    setHasValidUUID(isValid);
+  }, [tileHostData]);
 
   const handleClick = useCallback(async () => {
     const uuid = generateUUID();
@@ -116,10 +125,21 @@ const GenerateNewSectionButton: React.FC = () => {
     }
   }, [extensionSDK, tileHostData]);
 
+  if (hasValidUUID) {
+    return null;
+  }
+
   return (
-    <Button onClick={handleClick} width={200} mt="xlarge">
-      Generate New Section
-    </Button>
+    <Box height="100%">
+      <Button
+        onClick={handleClick}
+        width={200}
+        mt="xlarge"
+        style={{ marginTop: "0" }}
+      >
+        Generate New Section
+      </Button>
+    </Box>
   );
 };
 
