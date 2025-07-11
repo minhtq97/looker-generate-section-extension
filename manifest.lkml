@@ -1,11 +1,11 @@
 project_name: "tw_create_section_extension"
 
 application: tw_create_section_extension {
-  label: ""
+  label: "TW Rebate Create Section Extension"
   file: "dist/bundle.js"
   mount_points: {
     dashboard_vis: yes
-    dashboard_tile: yes
+    dashboard_tile: no
     standalone: yes
   }
   entitlements: {
