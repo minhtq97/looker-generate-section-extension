@@ -13,18 +13,20 @@
 // limitations under the License.
 
 /**
-  * This is a sample Looker Extension written in typescript and React. It imports one component, <HelloWorld>.
-  * HelloWorld makes a simple call to the Looker API using the Extension Framework's built in authentication,
-  * and returns the logged in user.
-*/
-import React from 'react'
-import { ExtensionProvider } from '@looker/extension-sdk-react'
-import { hot } from 'react-hot-loader/root'
-
-import { HelloWorld } from './HelloWorld'
+ * This is a sample Looker Extension written in typescript and React. It imports one component, <HelloWorld>.
+ * HelloWorld makes a simple call to the Looker API using the Extension Framework's built in authentication,
+ * and returns the logged in user.
+ */
+import React from "react";
+import { ExtensionProvider40 } from "@looker/extension-sdk-react";
+import { ComponentsProvider } from "@looker/components";
+import { hot } from "react-hot-loader/root";
+import GenerateNewSectionButton from "./GenerateNewSectionButton";
 
 export const App = hot(() => (
-  <ExtensionProvider>
-    <HelloWorld />
-  </ExtensionProvider>
-))
+  <ExtensionProvider40>
+    <ComponentsProvider>
+      <GenerateNewSectionButton />
+    </ComponentsProvider>
+  </ExtensionProvider40>
+));
