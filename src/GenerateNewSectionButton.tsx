@@ -169,7 +169,7 @@ const GenerateNewSectionButton: React.FC = () => {
         justifyContent="center"
       >
         <StyledButton onClick={handleClick}>
-          Generate New Section
+          Create Custom View
         </StyledButton>
       </Box>
     </Box>
