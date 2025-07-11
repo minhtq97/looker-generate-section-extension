@@ -1,28 +1,41 @@
-import React, { useCallback, useContext } from 'react'
-import { Button } from '@looker/components'
-import { ExtensionContext40 } from '@looker/extension-sdk-react'
+import { Button } from "@looker/components";
+import { ExtensionContext40 } from "@looker/extension-sdk-react";
+import React, { useCallback, useContext } from "react";
 
 // Helper to generate UUID v4
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
 
 // Helper to get UUID from filters (not used here, but left for context)
-function getUUIDFromFilters(dashboardFilters: Record<string, any>): string | null {
+function getUUIDFromFilters(
+  dashboardFilters: Record<string, any>
+): string | null {
   if (
     dashboardFilters &&
-    ((dashboardFilters.uuid && dashboardFilters.uuid !== '' && dashboardFilters.uuid !== null && dashboardFilters.uuid !== undefined) ||
-      (dashboardFilters.UUID && dashboardFilters.UUID !== '' && dashboardFilters.UUID !== null && dashboardFilters.UUID !== undefined))
+    ((dashboardFilters.uuid &&
+      dashboardFilters.uuid !== "" &&
+      dashboardFilters.uuid !== null &&
+      dashboardFilters.uuid !== undefined) ||
+      (dashboardFilters.UUID &&
+        dashboardFilters.UUID !== "" &&
+        dashboardFilters.UUID !== null &&
+        dashboardFilters.UUID !== undefined))
   ) {
     return dashboardFilters.uuid || dashboardFilters.UUID;
   }
   const urlParams = new URLSearchParams(window.location.search);
-  const urlUuid = urlParams.get('UUID') || urlParams.get('uuid');
-  if (urlUuid && urlUuid !== '' && urlUuid !== 'null' && urlUuid !== 'undefined') {
+  const urlUuid = urlParams.get("UUID") || urlParams.get("uuid");
+  if (
+    urlUuid &&
+    urlUuid !== "" &&
+    urlUuid !== "null" &&
+    urlUuid !== "undefined"
+  ) {
     return urlUuid;
   }
   return null;
@@ -32,17 +45,17 @@ function getUUIDFromFilters(dashboardFilters: Record<string, any>): string | nul
 function generateDashboardURLWithFiltersAndUUID(
   dashboardId: string,
   dashboardFilters: Record<string, any>,
-  uuid: string,
+  uuid: string
 ): string {
-  const baseUrl = 'https://lookerdev.zuelligpharma.com';
+  const baseUrl = "https://lookerdev.zuelligpharma.com";
   const dashboardUrl = `${baseUrl}/dashboards/${dashboardId}`;
   const url = new URL(dashboardUrl);
   Object.entries(dashboardFilters).forEach(([key, value]) => {
-    if (key && value && value !== '' && value !== '-NULL') {
+    if (key && value && value !== "" && value !== "-NULL") {
       url.searchParams.set(key, String(value));
     }
   });
-  url.searchParams.set('UUID', uuid);
+  url.searchParams.set("UUID", uuid);
   return url.toString();
 }
 
@@ -53,37 +66,52 @@ const GenerateNewSectionButton: React.FC = () => {
     const uuid = generateUUID();
     const currentDashboardId = tileHostData?.dashboardId?.toString();
     if (!currentDashboardId) {
-      alert('Unable to determine current dashboard ID. Please try again.');
+      alert("Unable to determine current dashboard ID. Please try again.");
       return;
     }
     // Get current dashboard filters
     const dashboardFilters: Record<string, any> = {};
     if (tileHostData && (tileHostData as any).dashboardFilters) {
-      Object.entries((tileHostData as any).dashboardFilters).forEach(([key, value]) => {
-        if (key && value && value !== '' && value !== '-NULL') {
-          dashboardFilters[key] = value;
+      Object.entries((tileHostData as any).dashboardFilters).forEach(
+        ([key, value]) => {
+          if (key && value && value !== "" && value !== "-NULL") {
+            dashboardFilters[key] = value;
+          }
         }
-      });
+      );
     }
-    const newUrl = generateDashboardURLWithFiltersAndUUID(currentDashboardId, dashboardFilters, uuid);
-    console.log('Generated new section URL:', newUrl);
+    const newUrl = generateDashboardURLWithFiltersAndUUID(
+      currentDashboardId,
+      dashboardFilters,
+      uuid
+    );
+    console.log("Generated new section URL:", newUrl);
     try {
-      if (extensionSDK && typeof extensionSDK.openBrowserWindow === 'function') {
-        await extensionSDK.openBrowserWindow(newUrl, '_blank');
+      if (
+        extensionSDK &&
+        typeof extensionSDK.openBrowserWindow === "function"
+      ) {
+        await extensionSDK.openBrowserWindow(newUrl, "_blank");
       } else {
-        throw new Error('openBrowserWindow not available');
+        throw new Error("openBrowserWindow not available");
       }
     } catch (error) {
-      console.error('Failed to open browser window:', error);
+      console.error("Failed to open browser window:", error);
       try {
         if (navigator.clipboard) {
           await navigator.clipboard.writeText(newUrl);
-          alert(`URL copied to clipboard. Please open it in a new tab.\n\n${newUrl}`);
+          alert(
+            `URL copied to clipboard. Please open it in a new tab.\n\n${newUrl}`
+          );
         } else {
-          alert(`Please navigate to:\n\n${newUrl}\n\nCopy this URL and open it in a new tab.`);
+          alert(
+            `Please navigate to:\n\n${newUrl}\n\nCopy this URL and open it in a new tab.`
+          );
         }
       } catch {
-        alert(`Please navigate to:\n\n${newUrl}\n\nCopy this URL and open it in a new tab.`);
+        alert(
+          `Please navigate to:\n\n${newUrl}\n\nCopy this URL and open it in a new tab.`
+        );
       }
     }
   }, [extensionSDK, tileHostData]);
@@ -93,6 +121,6 @@ const GenerateNewSectionButton: React.FC = () => {
       Generate New Section
     </Button>
   );
-}
+};
 
 export default GenerateNewSectionButton;
