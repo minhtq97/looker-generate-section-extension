@@ -1,6 +1,43 @@
 import { Box, Button, Space } from "@looker/components";
 import { ExtensionContext40 } from "@looker/extension-sdk-react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import "./GenerateNewSectionButton.css";
+
+// Styled button component
+const StyledButton = styled.button`
+  background-color: #007bff !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 12px 24px !important;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  transition: all 0.3s ease !important;
+  width: 200px !important;
+  min-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  &:hover {
+    background-color: #0056b3 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important;
+  }
+
+  &:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  }
+
+  &:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25) !important;
+  }
+`;
 
 // Helper to generate UUID v4
 function generateUUID(): string {
@@ -133,13 +170,9 @@ const GenerateNewSectionButton: React.FC = () => {
     <Box height="100%">
       <Box height="100%">
         <Space justify="end" between={true} style={{ marginTop: "-2rem !important" }} px="medium">
-          <Button
-            onClick={handleClick}
-            width={200}
-            variant="primary"
-          >
+          <StyledButton onClick={handleClick}>
             Generate New Section
-          </Button>
+          </StyledButton>
         </Space>
       </Box>
     </Box>
