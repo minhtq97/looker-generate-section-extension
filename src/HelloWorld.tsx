@@ -66,7 +66,7 @@ export const HelloWorld: React.FC = () => {
     return (
       <ComponentsProvider>
         <Box p="large">
-          <Space vertical>
+          <Space>
             <Heading as="h1" fontSize="large" color="critical">
               {error}
             </Heading>

@@ -1,6 +1,6 @@
-project_name: "tw_rebate_create_section_extension"
+project_name: "tw_rebate_create_section_ext"
 
-application: tw_rebate_create_section_extension {
+application: tw_rebate_create_section_ext {
   label: "TW Rebate Create Section Extension"
   file: "dist/bundle.js"
   mount_points: {
