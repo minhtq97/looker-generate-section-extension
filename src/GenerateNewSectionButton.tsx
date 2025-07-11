@@ -2,7 +2,6 @@ import { Box, Button, Space } from "@looker/components";
 import { ExtensionContext40 } from "@looker/extension-sdk-react";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import "./GenerateNewSectionButton.css";
 
 // Styled button component
 const StyledButton = styled.button`
