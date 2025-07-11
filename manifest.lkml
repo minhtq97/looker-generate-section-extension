@@ -1,7 +1,7 @@
-project_name: "tw_bi_rebate_extension"
+project_name: "tw_rebate_create_section_extension"
 
-application: tw_bi_rebate_extension {
-  label: "TW BI Rebate Extension"
+application: tw_rebate_create_section_extension {
+  label: "TW Rebate Create Section Extension"
   file: "dist/bundle.js"
   mount_points: {
     dashboard_vis: yes
