@@ -134,8 +134,8 @@ const GenerateNewSectionButton: React.FC = () => {
       <Button
         onClick={handleClick}
         width={200}
-        mt="xlarge"
-        style={{ marginTop: "0" }}
+        style={{ marginTop: "0 !important" }}
+        variant="primary"
       >
         Generate New Section
       </Button>
